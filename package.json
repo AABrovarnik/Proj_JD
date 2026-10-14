@@ -1,0 +1,20 @@
+{
+  "name": "yurotdel-local-mvp",
+  "version": "0.1.0",
+  "description": "Локальный MVP ЮрОтдел для анализа договоров аренды",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mammoth": "^1.10.0",
+    "multer": "^1.4.5-lts.2",
+    "pdf-parse": "^1.1.1"
+  }
+}

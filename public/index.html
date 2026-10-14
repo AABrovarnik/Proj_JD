@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ЮрОтдел · Анализ</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">ЮрОтдел · Локальный MVP</p>
+        <h1>Анализ договоров аренды</h1>
+        <p class="subtitle">Пастельный интерфейс с акцентом на риски и нарушения</p>
+      </div>
+      <div class="hero-right">
+        <div class="hero-badges">
+          <span class="badge badge-info">Профиль: РФ, нежилая аренда</span>
+          <span class="badge badge-ok">Режим: локальный</span>
+        </div>
+        <nav class="top-nav">
+          <a class="tab active" href="/">Анализ</a>
+          <a class="tab" href="/settings">Настройки</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="panel" id="loginCard">
+      <div class="panel-head"><h2>Вход</h2></div>
+      <div class="inline-form">
+        <input id="login" value="admin" placeholder="Логин" />
+        <input id="password" type="password" value="admin123" placeholder="Пароль" />
+        <button id="loginBtn" class="btn btn-primary">Войти</button>
+      </div>
+      <p class="hint">После входа токен сохраняется локально для страниц Анализ/Настройки.</p>
+    </section>
+
+    <section class="panel hidden" id="uploadCard">
+      <div class="panel-head">
+        <h2>Документы</h2>
+      </div>
+      <div class="inline-form">
+        <input id="files" type="file" multiple accept=".pdf,.docx" />
+        <button id="uploadBtn" class="btn btn-secondary">Загрузить</button>
+        <button id="analyzeBtn" class="btn btn-primary">Анализировать выбранные</button>
+      </div>
+      <div id="docs" class="doc-list"></div>
+    </section>
+
+    <section class="panel hidden" id="resultCard">
+      <div class="panel-head">
+        <h2>Результаты анализа</h2>
+        <div class="inline-links">
+          <button id="refreshAnalysesBtn" class="btn btn-ghost">Обновить</button>
+          <a href="/api/export/csv" target="_blank">CSV</a>
+          <a href="/api/export/json" target="_blank">JSON</a>
+        </div>
+      </div>
+      <div id="analysisSummary" class="summary-strip"></div>
+      <div id="analyses" class="analysis-list"></div>
+    </section>
+  </main>
+  <script src="/analysis.js"></script>
+</body>
+</html>

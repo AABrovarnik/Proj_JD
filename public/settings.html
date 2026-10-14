@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ЮрОтдел · Настройки</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">ЮрОтдел · Локальный MVP</p>
+        <h1>Настройки</h1>
+        <p class="subtitle">Промпты, лимиты и выбор LLM</p>
+      </div>
+      <div class="hero-right">
+        <div class="hero-badges">
+          <span class="badge badge-info">Контроль: формат JSON обязателен</span>
+          <span class="badge badge-ok">Настройки сохраняются в snapshot</span>
+        </div>
+        <nav class="top-nav">
+          <a class="tab" href="/">Анализ</a>
+          <a class="tab active" href="/settings">Настройки</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="panel" id="loginCard">
+      <div class="panel-head"><h2>Вход</h2></div>
+      <div class="inline-form">
+        <input id="login" value="admin" placeholder="Логин" />
+        <input id="password" type="password" value="admin123" placeholder="Пароль" />
+        <button id="loginBtn" class="btn btn-primary">Войти</button>
+      </div>
+      <p class="hint">Авторизуйтесь для изменения настроек.</p>
+    </section>
+
+    <section class="panel hidden" id="settingsCard">
+      <div class="panel-head"><h2>Параметры анализа</h2></div>
+      <div class="form-grid">
+        <label>Сторона
+          <select id="side">
+            <option value="tenant">Арендатор</option>
+            <option value="landlord">Арендодатель</option>
+            <option value="neutral">Нейтрально</option>
+          </select>
+        </label>
+        <label>LLM-провайдер
+          <select id="llmProvider">
+            <option value="openai">OpenAI</option>
+            <option value="alice">Alice</option>
+            <option value="local_mock">Local Mock</option>
+          </select>
+        </label>
+        <label>Модель
+          <input id="llmModel" placeholder="Например: gpt-4.1-mini / alice-pro / local-heuristic-v1" />
+        </label>
+        <label>Лимит файла (MB)<input id="maxFileMb" type="number" /></label>
+        <label>Лимит PDF-страниц<input id="maxPdfPages" type="number" /></label>
+        <label>Лимит файлов в пакете<input id="maxBatchFiles" type="number" /></label>
+      </div>
+      <label>Дополнительный промпт
+        <textarea id="additionalPrompt" rows="4" placeholder="Например: усилить проверку санкций, индексации и оснований расторжения"></textarea>
+      </label>
+      <div class="actions">
+        <button id="saveSettingsBtn" class="btn btn-secondary">Сохранить настройки</button>
+      </div>
+      <p class="hint">Ключи и URL для LLM задаются в `.env` (OPENAI_API_KEY / ALICE_API_KEY / ALICE_API_URL).</p>
+    </section>
+  </main>
+  <script src="/settings.js"></script>
+</body>
+</html>
