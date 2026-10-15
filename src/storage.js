@@ -28,19 +28,27 @@ function withDefaults(db) {
     additionalPrompt: String(db.settings.additionalPrompt || ''),
     checklist: Array.isArray(db.settings.checklist) && db.settings.checklist.length ? db.settings.checklist : defaultChecklist,
     llmProvider: db.settings.llmProvider || 'local_mock',
-    llmModel: db.settings.llmModel || 'local-heuristic-v1'
+    llmModel: db.settings.llmModel || 'local-heuristic-v1',
+    llmTimeoutMs: Number.isFinite(Number(db.settings.llmTimeoutMs))
+      ? Math.max(5000, Math.min(180000, Math.round(Number(db.settings.llmTimeoutMs))))
+      : 120000,
+    refineEnabled: db.settings.refineEnabled === undefined ? true : Boolean(db.settings.refineEnabled),
+    maxRefineRounds: Number.isFinite(Number(db.settings.maxRefineRounds))
+      ? Math.max(0, Math.min(4, Math.round(Number(db.settings.maxRefineRounds))))
+      : 4
   };
 
   db.documents = Array.isArray(db.documents) ? db.documents : [];
   db.analyses = Array.isArray(db.analyses) ? db.analyses : [];
   db.audit = Array.isArray(db.audit) ? db.audit : [];
+  db.comparisons = Array.isArray(db.comparisons) ? db.comparisons : [];
 
   return db;
 }
 
 function ensureDb() {
   if (!fs.existsSync(DATA_PATH)) {
-    const seed = withDefaults({ settings: {}, documents: [], analyses: [], audit: [] });
+    const seed = withDefaults({ settings: {}, documents: [], analyses: [], audit: [], comparisons: [] });
     fs.writeFileSync(DATA_PATH, JSON.stringify(seed, null, 2), 'utf-8');
     return;
   }

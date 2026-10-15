@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ЮрОтдел · Сравнение моделей</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">ЮрОтдел · Локальный MVP</p>
+        <h1>Сравнение сильной и бюджетной LLM</h1>
+        <p class="subtitle">Сопоставление оценок по каждому договору и параметру</p>
+      </div>
+      <div class="hero-right">
+        <div class="hero-badges">
+          <span class="badge badge-info">Контур: текущий дополнительный промпт</span>
+          <span class="badge badge-ok">Выход: улучшение промпта от сильной модели</span>
+        </div>
+        <nav class="top-nav">
+          <a class="tab" href="/">Анализ</a>
+          <a class="tab" href="/settings">Настройки</a>
+          <a class="tab active" href="/compare">Сравнение</a>
+        </nav>
+        <button id="logoutBtn" class="btn btn-ghost hidden" type="button">Выйти</button>
+      </div>
+    </header>
+
+    <section class="panel" id="loginCard">
+      <div class="panel-head"><h2>Вход</h2></div>
+      <div class="inline-form">
+        <input id="login" value="admin" placeholder="Логин" />
+        <input id="password" type="password" value="admin123" placeholder="Пароль" />
+        <button id="loginBtn" class="btn btn-primary">Войти</button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="compareCard">
+      <div class="panel-head"><h2>Запуск сравнения</h2></div>
+      <p class="hint">Текущий дополнительный промпт:</p>
+      <pre id="currentPrompt" class="prompt-box">—</pre>
+
+      <div class="panel-head" style="margin-top:14px"><h2>Документы</h2></div>
+      <div id="docPicker" class="doc-list"></div>
+
+      <div class="actions">
+        <button id="runCompareBtn" class="btn btn-primary">Сравнить сильную и бюджетную</button>
+        <button id="refreshCompareBtn" class="btn btn-secondary">Обновить историю</button>
+      </div>
+      <label class="doc-item" style="margin-top:8px;">
+        <input id="quickMode" type="checkbox" />
+        <div>
+          <strong>Быстрый режим сравнения</strong>
+          <small>Без refine, только базовые ответы моделей</small>
+        </div>
+      </label>
+      <p id="compareStatus" class="hint">Ожидание запуска…</p>
+      <div id="progressBox" class="analysis-card hidden" style="margin-top:10px;">
+        <div class="analysis-head">
+          <h3>Прогресс текущего запуска</h3>
+          <span id="progressSummary" class="badge badge-info">0 / 0</span>
+        </div>
+        <div id="progressDocs" class="analysis-body"></div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="resultCard">
+      <div class="panel-head"><h2>Результаты сравнения</h2></div>
+      <div id="compareRuns" class="analysis-list"></div>
+    </section>
+  </main>
+  <script src="/compare.js"></script>
+</body>
+</html>

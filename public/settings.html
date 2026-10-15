@@ -23,7 +23,9 @@
         <nav class="top-nav">
           <a class="tab" href="/">Анализ</a>
           <a class="tab active" href="/settings">Настройки</a>
+          <a class="tab" href="/compare">Сравнение</a>
         </nav>
+        <button id="logoutBtn" class="btn btn-ghost hidden" type="button">Выйти</button>
       </div>
     </header>
 
@@ -38,7 +40,14 @@
     </section>
 
     <section class="panel hidden" id="settingsCard">
-      <div class="panel-head"><h2>Параметры анализа</h2></div>
+      <div class="panel-head"><h2>Профили LLM (сильная/бюджетная)</h2></div>
+      <div class="inline-form">
+        <button id="tierStrongBtn" class="btn btn-primary" type="button">Применить сильную</button>
+        <button id="tierBudgetBtn" class="btn btn-secondary" type="button">Применить бюджетную</button>
+      </div>
+      <div id="tierProfiles" class="hint" style="margin-top:8px"></div>
+
+      <div class="panel-head" style="margin-top:14px"><h2>Параметры анализа</h2></div>
       <div class="form-grid">
         <label>Сторона
           <select id="side">
@@ -55,7 +64,19 @@
           </select>
         </label>
         <label>Модель
-          <input id="llmModel" placeholder="Например: gpt-4.1-mini / alice-pro / local-heuristic-v1" />
+          <input id="llmModel" placeholder="Например: gpt-6.1-sol / gpt-6-luna / alice-pro" />
+        </label>
+        <label>Уточняющий режим
+          <select id="refineEnabled">
+            <option value="true">Включен</option>
+            <option value="false">Выключен</option>
+          </select>
+        </label>
+        <label>Макс. доп. раундов (0-4)
+          <input id="maxRefineRounds" type="number" min="0" max="4" step="1" />
+        </label>
+        <label>Таймаут LLM (мс)
+          <input id="llmTimeoutMs" type="number" min="5000" max="180000" step="1000" />
         </label>
         <label>Лимит файла (MB)<input id="maxFileMb" type="number" /></label>
         <label>Лимит PDF-страниц<input id="maxPdfPages" type="number" /></label>
@@ -67,7 +88,24 @@
       <div class="actions">
         <button id="saveSettingsBtn" class="btn btn-secondary">Сохранить настройки</button>
       </div>
-      <p class="hint">Ключи и URL для LLM задаются в `.env` (OPENAI_API_KEY / ALICE_API_KEY / ALICE_API_URL).</p>
+
+      <div class="panel-head" style="margin-top:14px"><h2>Секреты LLM</h2></div>
+      <div class="form-grid">
+        <label>OpenAI API Key
+          <input id="openaiApiKey" type="password" autocomplete="new-password" placeholder="sk-..." />
+        </label>
+        <label>Alice API Key
+          <input id="aliceApiKey" type="password" autocomplete="new-password" placeholder="alice-key..." />
+        </label>
+        <label>Alice API URL
+          <input id="aliceApiUrl" type="password" autocomplete="off" placeholder="https://..." />
+        </label>
+      </div>
+      <div class="actions">
+        <button id="saveSecretsBtn" class="btn btn-primary" type="button">Сохранить ключи</button>
+      </div>
+      <p id="secretStatus" class="hint">Загрузка статуса ключей…</p>
+      <p class="hint">Ключи сохраняются в зашифрованном виде и не отображаются после сохранения.</p>
     </section>
   </main>
   <script src="/settings.js"></script>

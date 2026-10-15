@@ -49,9 +49,31 @@ function rowAlertClass(status) {
   return '';
 }
 
+function roundStatusClass(status) {
+  if (status === 'ok') return 'round-ok';
+  if (status === 'failed') return 'round-failed';
+  return 'round-stopped';
+}
+
+function roundStatusTitle(status) {
+  if (status === 'ok') return 'ok';
+  if (status === 'failed') return 'ошибка';
+  if (status === 'stopped') return 'остановлено';
+  return status || '-';
+}
+
 function showAuthedSections() {
-  document.getElementById('uploadCard').classList.remove('hidden');
-  document.getElementById('resultCard').classList.remove('hidden');
+  loginCard.classList.add('hidden');
+  uploadCard.classList.remove('hidden');
+  resultCard.classList.remove('hidden');
+  logoutBtn.classList.remove('hidden');
+}
+
+function showGuestSections() {
+  loginCard.classList.remove('hidden');
+  uploadCard.classList.add('hidden');
+  resultCard.classList.add('hidden');
+  logoutBtn.classList.add('hidden');
 }
 
 function renderDocuments() {
@@ -106,6 +128,31 @@ function renderSummary() {
   `;
 }
 
+function renderRounds(rounds) {
+  if (!Array.isArray(rounds) || rounds.length === 0) {
+    return '<p class="hint">История раундов недоступна</p>';
+  }
+
+  return `
+    <div class="rounds-box">
+      ${rounds.map((round) => `
+        <div class="round-item ${roundStatusClass(round.status)}">
+          <div>
+            <strong>Раунд ${round.round}</strong>
+            <span class="round-meta">${round.type}</span>
+          </div>
+          <div class="round-right">
+            <span class="round-badge">${roundStatusTitle(round.status)}</span>
+            ${round.parameter ? `<span class="round-meta">${round.parameter}</span>` : ''}
+            ${round.reason ? `<span class="round-meta">${round.reason}</span>` : ''}
+          </div>
+          ${round.error ? `<div class="round-error">${round.error}</div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
 function renderAnalyses() {
   const node = document.getElementById('analyses');
   if (!analysesCache.length) {
@@ -128,6 +175,7 @@ function renderAnalyses() {
     `).join('');
 
     const llmText = analysis.llm ? `${analysis.llm.provider} / ${analysis.llm.model}` : 'n/a';
+    const roundsHtml = renderRounds(analysis?.result?.rounds);
 
     return `
       <article class="analysis-card">
@@ -137,6 +185,9 @@ function renderAnalyses() {
         </div>
         <div class="analysis-body">
           <p class="hint">Проверено: ${formatDate(analysis.analyzedAt)} · Риск: <strong>${analysis?.result?.summary?.riskLevel || '-'}</strong> · LLM: <strong>${llmText}</strong></p>
+          <h4 class="subhead">История раундов</h4>
+          ${roundsHtml}
+          <h4 class="subhead">Параметры договора</h4>
           <table class="finding-table">
             <thead>
               <tr>
@@ -198,6 +249,21 @@ async function loadAnalyses() {
   renderAnalyses();
 }
 
+async function clearModelSecrets() {
+  if (!token) return;
+  try {
+    await api('/api/secrets/clear', { method: 'POST' });
+  } catch {}
+}
+
+async function logout() {
+  await clearModelSecrets();
+  localStorage.removeItem('yurotdel_token');
+  localStorage.removeItem('yurotdel_login');
+  token = '';
+  showGuestSections();
+}
+
 async function login() {
   const res = await api('/api/auth/login', {
     method: 'POST',
@@ -208,13 +274,24 @@ async function login() {
 
   token = out.token;
   localStorage.setItem('yurotdel_token', token);
+
+  const previousLogin = localStorage.getItem('yurotdel_login') || '';
+  const currentLogin = String(loginInput.value || '').trim();
+  if (previousLogin && previousLogin !== currentLogin) {
+    await clearModelSecrets();
+  }
+  localStorage.setItem('yurotdel_login', currentLogin);
+
   showAuthedSections();
   await loadDocs();
   await loadAnalyses();
 }
 
 async function bootFromSavedToken() {
-  if (!token) return;
+  if (!token) {
+    showGuestSections();
+    return;
+  }
   try {
     showAuthedSections();
     await loadDocs();
@@ -222,9 +299,14 @@ async function bootFromSavedToken() {
   } catch {
     localStorage.removeItem('yurotdel_token');
     token = '';
+    showGuestSections();
   }
 }
 
+const loginCard = document.getElementById('loginCard');
+const uploadCard = document.getElementById('uploadCard');
+const resultCard = document.getElementById('resultCard');
+const logoutBtn = document.getElementById('logoutBtn');
 const loginInput = document.getElementById('login');
 const passwordInput = document.getElementById('password');
 const loginBtn = document.getElementById('loginBtn');
@@ -236,5 +318,6 @@ loginBtn.onclick = login;
 uploadBtn.onclick = uploadDocs;
 analyzeBtn.onclick = runAnalyze;
 refreshAnalysesBtn.onclick = loadAnalyses;
+logoutBtn.onclick = logout;
 
 bootFromSavedToken();
